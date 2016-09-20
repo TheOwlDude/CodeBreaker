@@ -16,7 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\Staging\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -24,12 +24,13 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\Staging\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FSharp.Core, Version=4.3.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
@@ -60,19 +61,34 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\CodeBreakerControllers\GuessController.cs" />
     <Compile Include="Controllers\ContentControllerBase.cs" />
+    <Compile Include="Controllers\CssController.cs" />
     <Compile Include="Controllers\HintDrivenControllerSelector.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HtmlController.cs" />
     <Compile Include="Controllers\JavascriptController.cs" />
+    <Compile Include="HttpResponseMessageFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SiteManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\CodeBreakerIntegrationLib\CodeBreakerIntegrationLib.csproj">
+      <Project>{ec4dd8cc-15b6-4df7-a8b6-e33375b9a68e}</Project>
+      <Name>CodeBreakerIntegrationLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GameEngine\GameEngine.fsproj">
+      <Project>{2a19fb3e-16bc-4410-bf3f-a6816fe1b5b5}</Project>
+      <Name>GameEngine</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\Css\CodeBreaker.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Html\CodeBreaker.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -80,6 +96,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Javascript\CodeBreaker.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Javascript\jquery-3.1.0.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

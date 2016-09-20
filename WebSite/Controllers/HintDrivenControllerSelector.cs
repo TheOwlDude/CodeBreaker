@@ -10,6 +10,7 @@ using System.Net.Http;
 using log4net;
 using System.Web.Http.Controllers;
 using System.Web.Http;
+using WebSite.Controllers.CodeBreakerControllers;
 
 namespace WebSite.Controllers
 {
@@ -46,6 +47,10 @@ namespace WebSite.Controllers
                     return new HttpControllerDescriptor(config, controllerHint, typeof(HtmlController));
                 case SiteManager.javascriptControllerHint:
                     return new HttpControllerDescriptor(config, controllerHint, typeof(JavascriptController));
+                case SiteManager.cssControllerHint:
+                    return new HttpControllerDescriptor(config, controllerHint, typeof(CssController));
+                case SiteManager.codebreakerGuessControllerHint:
+                    return new HttpControllerDescriptor(config, controllerHint, typeof(GuessController));
                 default:
                     LogManager.GetLogger("Route Selection").ErrorFormat("Unknown conntroller hint {0}", controllerHint);
                     return null;

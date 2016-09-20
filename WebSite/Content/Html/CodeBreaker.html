@@ -1,5 +1,7 @@
 <head>
   <script type="text/javascript" src="Javascript/CodeBreaker.js"></script>
+  <script type="text/javascript" src="Javascript/jquery-3.1.0.js"></script>
+  <link rel="stylesheet" type="text/css" href="Css/CodeBreaker.css">
   <title>Practice!</title>
   <script>    
     window.onload = function(e) {
@@ -11,29 +13,38 @@
 </head>
 <body>
   <a href="../Home">TheOwlDude Home</a>  
-  <div>
-    <div><label>Code Length</label><input id ="tbCodeLength" type="text" width="200" /></div>
-    <div><label>Color Count</label><input type="text" width="200" /></div>
-	<div><button id="btnNewGame" onClick="newGame();">Start New Game</button> </div>
-  </div>
-  <div>
-    <svg id="svg" width="50%" height="100%" viewBox="0 0 200 200">
-	    <svg y="0" height="10">
-	    <rect id="rectInCurrentRow" x="1" y="2" width="6" height="6" fill-opacity="0.2"/>
-	    <circle cx="4" cy="5" fill="red" r="2" />
-	    <circle cx="10" cy="5" fill="blue" r="2" />
-	    <circle cx="16" cy="5" fill="blue" r="2" />
-	    <circle cx="22" cy="5" fill="purple" r="2" />
-	    <circle cx="30" cy="3" fill="black" r="1" />
-		</svg>
-	    <svg y="12" height="10">
-	    <rect x="1" y="2" width="6" height="6" fill-opacity="0.2"/>
-	    <circle cx="4" cy="5" fill="red" r="2" />
-	    <circle cx="10" cy="5" fill="blue" r="2" />
-	    <circle cx="16" cy="5" fill="blue" r="2" />
-	    <circle cx="22" cy="5" fill="purple" r="2" />
-	    <circle cx="30" cy="3" fill="black" r="1" />
-		</svg>
-    </svg>
-  </div>
+    <table>
+        <tr>
+            <td class="top_aligned">
+                <div>
+                    <div><label>Code Length (2 - 8)</label><input id="tbCodeLength" type="text" width="200" value="4" /></div>
+                    <div><label>Color Count (2 - 8)</label><input id="tbColorCount" type="text" width="200" value="6" /></div>
+                    <div><button id="btnNewGame" onclick="newGame();">Start New Game</button> </div>
+                    <div><button id="btnGuess" onclick="guess();">Guess</button></div>
+                </div>
+            </td>
+            <td>
+                <div>
+                    <svg id="svg" width="50%" height="100%" viewBox="0 0 200 200">
+                        <svg y="0" height="10">
+                            <rect id="rectInCurrentRow" x="1" y="2" width="6" height="6" fill-opacity="0.2" />
+                            <circle cx="4" cy="5" fill="red" r="2" />
+                            <circle cx="10" cy="5" fill="blue" r="2" />
+                            <circle cx="16" cy="5" fill="blue" r="2" />
+                            <circle cx="22" cy="5" fill="purple" r="2" />
+                            <circle cx="30" cy="3" fill="black" r="1" />
+                        </svg>
+                        <svg y="12" height="10">
+                            <rect x="1" y="2" width="6" height="6" fill-opacity="0.2" />
+                            <circle cx="4" cy="5" fill="red" r="2" />
+                            <circle cx="10" cy="5" fill="blue" r="2" />
+                            <circle cx="16" cy="5" fill="blue" r="2" />
+                            <circle cx="22" cy="5" fill="purple" r="2" />
+                            <circle cx="30" cy="3" fill="black" r="1" />
+                        </svg>
+                    </svg>
+                </div>
+            </td>
+        </tr>
+    </table>
 </body>

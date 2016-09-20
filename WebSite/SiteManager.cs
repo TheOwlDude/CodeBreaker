@@ -40,11 +40,29 @@ namespace WebSite
             );
 
             configuration.Routes.MapHttpRoute(
+                "cssRoute",
+                "UI/Css/{file}",
+                new Dictionary<string, object>
+                {
+                    {SiteManager.ControllerHintKey, SiteManager.cssControllerHint}
+                }
+            );
+
+            configuration.Routes.MapHttpRoute(
                 "home",
                 "Home",
                 new Dictionary<string, object>
                 {
                     {SiteManager.ControllerHintKey, SiteManager.homeControllerHint}
+                }
+            );
+
+            configuration.Routes.MapHttpRoute(
+                "CodeBreakerGuess",
+                "CodeBreaker/Guess",
+                new Dictionary<string, object>
+                {
+                    {SiteManager.ControllerHintKey, SiteManager.codebreakerGuessControllerHint}
                 }
             );
 
@@ -58,6 +76,8 @@ namespace WebSite
         public const string ControllerHintKey = "controllerHint";
         public const string htmlControllerHint = "htmlController";
         public const string javascriptControllerHint = "javascriptController";
+        public const string cssControllerHint = "cssController";
+        public const string codebreakerGuessControllerHint = "codebreakerGuessController";
         public const string homeControllerHint = "homeController";
     }
 }

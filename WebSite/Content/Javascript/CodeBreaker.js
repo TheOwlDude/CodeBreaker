@@ -1,6 +1,7 @@
 var colorMap = new Array("red", "blue", "yellow", "pink", "black", "green", "orange", "purple");
 var codeLength = 4;
 var colorCount = 8;
+var code;
 var guessOutcomes;
 var selectedGuessIndex = 0;
 var selectedCodeIndex = 0;
@@ -45,14 +46,89 @@ function keydown(e) {
 	}
 }
 
+
+function GetIntValueOfInputWithinBounds(lowerBound, upperBound, defaultValue, elementId) {
+    var element = document.getElementById(elementId);
+    var valueAsNumber = Number(element.value);
+    if (isNaN(valueAsNumber)) {
+        element.value = defaultValue;
+        return defaultValue;
+    }
+    else {
+        valueAsNumber = Math.floor(valueAsNumber);
+        if (valueAsNumber < lowerBound || valueAsNumber > upperBound) {
+            element.value = defaultValue;
+            return defaultValue;
+        }
+        else {
+            return valueAsNumber;
+        }
+    }
+}
+
+
 function newGame() {
-	var firstGuess = [0, 0, 0, 0];
+    codeLength = GetIntValueOfInputWithinBounds(2, 8, 4, "tbCodeLength");
+    colorCount = GetIntValueOfInputWithinBounds(2, 8, 6, "tbColorCount");
+
+    code = new Array(codeLength);
+    for(i = 0; i < codeLength; ++i) {
+        code[i] = Math.floor(Math.random() * colorCount); 
+    }
+
+	var firstGuess = createNewGuess();
     guessOutcomes = [ {Guess: firstGuess} ];
-	selectedGuessItem = 0;
 	renderGame(guessOutcomes);
 }
 
-function renderGame(guessOutcomes) {
+function guess() {
+    var guess =
+    {
+        CodeLength: codeLength,
+        ColocCount: colorCount,
+        Code: code,
+        Guess: guessOutcomes[guessOutcomes.length - 1].Guess
+    }
+
+    var stringifiedJson = JSON.stringify(guess);
+    $.ajax(
+        {
+            method: "Post",
+            url: "../CodeBreaker/Guess",
+            contentType: "application/json",
+            data: stringifiedJson,
+        }
+    ).done(guessDoneCallback)
+}
+
+function addOutcome(result) {
+    
+    var guessWithoutOutcome = guessOutcomes[guessOutcomes.length - 1];
+    guessWithoutOutcome.Outcome = { BlackCount: result.BlackCount, WhiteCount: result.WhiteCount };
+
+    var nextGuess = createNewGuess();
+    guessOutcomes[guessOutcomes.length] = { Guess: nextGuess };
+    selectedCodeIndex = 0;
+
+    renderGame();
+}
+
+function createNewGuess() {
+    var nextGuess = new Array(codeLength);
+    for (i = 0; i < codeLength; ++i) nextGuess[i] = 0;
+    return nextGuess;
+}
+
+function guessDoneCallback(data, textStatus, jqXHR) {
+    if (textStatus != "success") {
+        alert("Guess done callback received non success status code " + textStatus);
+    }
+    else {
+        addOutcome(data);
+    }
+}
+
+function renderGame() {
 	
 	var svg = document.getElementById("svg");
 	
@@ -73,7 +149,5 @@ function renderGame(guessOutcomes) {
 		}
 		innerhtml += "</svg>";		
 	}
-	svg.innerHTML = innerhtml;
-
-	      
+	svg.innerHTML = innerhtml;	      
 }
