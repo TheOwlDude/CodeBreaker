@@ -3,7 +3,6 @@ var codeLength = 4;
 var colorCount = 8;
 var code;
 var guessOutcomes;
-var selectedGuessIndex = 0;
 var selectedCodeIndex = 0;
 
 function click() {
@@ -11,7 +10,8 @@ function click() {
 }
 
 function keydown(e) {
-	var arrowKey = true;
+    var selectedGuessIndex = guessOutcomes.length - 1;
+    var arrowKey = true;
     switch(e.keyCode) {
 	    case 37:  //left
 		    if (selectedCodeIndex == 0) selectedCodeIndex = codeLength - 1;
@@ -144,9 +144,22 @@ function renderGame() {
 			}
 			innerhtml += "/>";
 		}
+
+        if (typeof guessOutcomes[i].Outcome === "undefined") {
+
+        }
+        else {
+            for (b = 0; b < guessOutcomes[i].Outcome.BlackCount; ++b) {
+                innerhtml += "<circle cx='" + (4 + 6 * guess.length + 2 * b) + "' cy='3' fill='black' r='1' />"
+            }
+            for (w = 0; w < guessOutcomes[i].Outcome.WhiteCount; ++w) {
+                innerhtml += "<circle cx='" + (4 + 6 * guess.length + 2 * w) + "' cy='6' fill='gray' r='1' />"
+            }
+        }
+
 		if (i == guessOutcomes.length - 1) {
 			innerhtml += "<rect id x='" + (1 + 6 * selectedCodeIndex) + "' y='2' width='6' height='6' fill='white' fill-opacity='0.05' stroke='black' />";
-		}
+		}        
 		innerhtml += "</svg>";		
 	}
 	svg.innerHTML = innerhtml;	      
