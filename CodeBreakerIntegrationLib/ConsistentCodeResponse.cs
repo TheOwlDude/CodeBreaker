@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace CodeBreakerIntegrationLib
 {
-    public class GuessOutcome
+    public class ConsistentCodeResponse
     {
-        public int[] Guess { get; set; }
-        public int BlackCount;
-        public int WhiteCount;
+        public int[][] ConsistentCodes { get; set; }
     }
 }

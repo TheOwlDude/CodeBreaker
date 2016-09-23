@@ -14,11 +14,10 @@ using System.Web.Http;
 
 namespace WebSite.Controllers.CodeBreakerControllers
 {
-    public class GuessController : ApiController
+    public class ConsistentCodeController : ApiController
     {
-
         [HttpPost]
-        public HttpResponseMessage Guess()
+        public HttpResponseMessage ConsistentCodes()
         {
             MemoryStream mStream = new MemoryStream();
             Request.Content.CopyToAsync(mStream).Wait();
@@ -27,21 +26,20 @@ namespace WebSite.Controllers.CodeBreakerControllers
             mStream.Read(jsonBytes, 0, Convert.ToInt32(mStream.Length));
             string jsonData = Encoding.UTF8.GetString(jsonBytes);
 
-            GuessOutcomeRequest guess = (GuessOutcomeRequest)JsonConvert.DeserializeObject(jsonData, typeof(GuessOutcomeRequest));
+            ConsistentCodeRequest consistentCodeRequest = (ConsistentCodeRequest)JsonConvert.DeserializeObject(jsonData, typeof(ConsistentCodeRequest));
 
-            Game.Engine.Outcome outcome = Game.Engine.calculateGuessResult(SeqModule.ToList(guess.Guess), SeqModule.ToList(guess.Code));
+            FSharpList<FSharpList<int>> consistentCodes = Game.Engine.codesConsistentWithOutcomes(
+                consistentCodeRequest.CodeLength,
+                consistentCodeRequest.ColorCount,
+                SeqModule.ToList(consistentCodeRequest.GameInfo.Select(go => new Game.Engine.GuessOutcome(SeqModule.ToList(go.Guess), new Game.Engine.Outcome(go.BlackCount, go.WhiteCount))))
+            );
 
-            GuessOutcomeResponse result = new GuessOutcomeResponse
+            ConsistentCodeResponse consistentCodeResponse = new ConsistentCodeResponse
             {
-                CodeLength = guess.CodeLength,
-                ColorCount = guess.ColorCount,
-                Code = guess.Code,
-                Guess = guess.Guess,
-                BlackCount = outcome.blackCount,
-                WhiteCount = outcome.whiteCount
+                ConsistentCodes = consistentCodes.Select(cc => cc.ToArray()).ToArray()
             };
 
-            string jsonContent = JsonConvert.SerializeObject(result);
+            string jsonContent = JsonConvert.SerializeObject(consistentCodeResponse);
             HttpResponseMessage response = HttpResponseMessageFactory.GetResponse(HttpStatusCode.OK);
             response.Content = new StringContent(jsonContent);
             response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");

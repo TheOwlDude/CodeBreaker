@@ -9,7 +9,7 @@ namespace CodeBreakerIntegrationLib
     /// <summary>
     /// Type to Serialize a Guess from the browser into
     /// </summary>
-    public class CodeGuess
+    public class GuessOutcomeRequest
     {
         public int CodeLength { get; set; }
         public int ColorCount { get; set; }

@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\CodeBreakerControllers\ConsistentCodeController.cs" />
     <Compile Include="Controllers\CodeBreakerControllers\GuessController.cs" />
     <Compile Include="Controllers\ContentControllerBase.cs" />
     <Compile Include="Controllers\CssController.cs" />

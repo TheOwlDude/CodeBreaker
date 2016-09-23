@@ -99,6 +99,10 @@ function guess() {
             data: stringifiedJson,
         }
     ).done(guessDoneCallback)
+
+    var cheatCell = document.getElementById("cheatCell");
+    cheatCell.innerHTML = "";
+
 }
 
 function addOutcome(result) {
@@ -166,31 +170,61 @@ function renderGame() {
 }
 
 
-function addConsistentCodes() {
+function getConsistentCodes() {
+
+    var outcomes = [];
+    for (i = 0; i < guessOutcomes.length; ++i) {
+        if (typeof guessOutcomes[i].Outcome === "undefined") break;
+
+        outcomes[i] = { Guess: guessOutcomes[i].Guess, BlackCount: guessOutcomes[i].Outcome.BlackCount, WhiteCount: guessOutcomes[i].Outcome.WhiteCount }
+    }
+
+
+    var consistentCodesRequest =
+    {
+        CodeLength: codeLength,
+        ColorCount: colorCount,
+        GameInfo: outcomes
+    }
+
+    var stringifiedJson = JSON.stringify(consistentCodesRequest);
+
     $.ajax(
         {
             method: "Post",
-            url: "../CodeBreaker/Guess",
+            url: "../CodeBreaker/ConsistentCodes",
             contentType: "application/json",
             data: stringifiedJson,
         }
-    ).done(guessDoneCallback)
+    ).done(getConsistentCodesDoneCallback)
 }
 
 
-function addConsistentCodesDoneCallback(data, textStatus, jqXHR) {
-    var svg = document.getElementById("cheatCell");
-
-    var innerhtml = "<div><label class='consistentCodes'>Codes consistent with outcomes to date.</label></div>";
-    innerhtml += "<div><svg width='100%' height='100%' viewBox='0 0 200 200'>";
-
+function getConsistentCodesDoneCallback(data, textStatus, jqXHR) {
 
     if (textStatus != "success") {
         alert("Guess done callback received non success status code " + textStatus);
         return;
     }
 
+    var cheatCell = document.getElementById("cheatCell");
 
+    //var innerhtml = "<div><label class='consistentCodes'>Codes consistent with outcomes to date.</label></div>";
+    //innerhtml += "<div><svg width='100%' height='100%' viewBox='0 0 200 200'>";
 
+    //var innerhtml = "<div class='scrollable'><svg width='100%' height='100%' viewBox='0 0 100 100' class='scrollable'>";
+    var innerhtml = "<div class='scrollable'>";
 
+    for (i = 0; i < data.ConsistentCodes.length; ++i) {
+        innerhtml += "<div><svg y='" + (i * 12) + "' height='10'>";
+        var guess = data.ConsistentCodes[i];
+        for (j = 0; j < guess.length; ++j) {
+            innerhtml += "<circle cx='" + (4 + 10 * j) + "' cy='5' fill='" + colorMap[guess[j]] + "' r='4' />";
+        }
+        innerhtml += "</svg></div>"
+    }
+    //innerhtml += "</svg></div>";
+    innerhtml += "</div>";
+
+    cheatCell.innerHTML = innerhtml;
 }

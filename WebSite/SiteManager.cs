@@ -66,6 +66,15 @@ namespace WebSite
                 }
             );
 
+            configuration.Routes.MapHttpRoute(
+                "CodeBreakerConsistentCodes",
+                "CodeBreaker/ConsistentCodes",
+                new Dictionary<string, object>
+                {
+                    {SiteManager.ControllerHintKey, SiteManager.codebreakerConsistentCodeControllerHint}
+                }
+            );
+
             configuration.Services.Replace(typeof(IHttpControllerSelector), new HintDrivenControllerSelector(configuration));
             server = new HttpSelfHostServer(configuration);
             server.OpenAsync().Wait();
@@ -78,6 +87,7 @@ namespace WebSite
         public const string javascriptControllerHint = "javascriptController";
         public const string cssControllerHint = "cssController";
         public const string codebreakerGuessControllerHint = "codebreakerGuessController";
+        public const string codebreakerConsistentCodeControllerHint = "codebreakerConsistentCodeController";
         public const string homeControllerHint = "homeController";
     }
 }

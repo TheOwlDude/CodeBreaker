@@ -51,6 +51,8 @@ namespace WebSite.Controllers
                     return new HttpControllerDescriptor(config, controllerHint, typeof(CssController));
                 case SiteManager.codebreakerGuessControllerHint:
                     return new HttpControllerDescriptor(config, controllerHint, typeof(GuessController));
+                case SiteManager.codebreakerConsistentCodeControllerHint:
+                    return new HttpControllerDescriptor(config, controllerHint, typeof(ConsistentCodeController));
                 default:
                     LogManager.GetLogger("Route Selection").ErrorFormat("Unknown conntroller hint {0}", controllerHint);
                     return null;
