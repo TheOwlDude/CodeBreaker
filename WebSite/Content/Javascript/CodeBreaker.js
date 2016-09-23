@@ -164,3 +164,33 @@ function renderGame() {
 	}
 	svg.innerHTML = innerhtml;	      
 }
+
+
+function addConsistentCodes() {
+    $.ajax(
+        {
+            method: "Post",
+            url: "../CodeBreaker/Guess",
+            contentType: "application/json",
+            data: stringifiedJson,
+        }
+    ).done(guessDoneCallback)
+}
+
+
+function addConsistentCodesDoneCallback(data, textStatus, jqXHR) {
+    var svg = document.getElementById("cheatCell");
+
+    var innerhtml = "<div><label class='consistentCodes'>Codes consistent with outcomes to date.</label></div>";
+    innerhtml += "<div><svg width='100%' height='100%' viewBox='0 0 200 200'>";
+
+
+    if (textStatus != "success") {
+        alert("Guess done callback received non success status code " + textStatus);
+        return;
+    }
+
+
+
+
+}
