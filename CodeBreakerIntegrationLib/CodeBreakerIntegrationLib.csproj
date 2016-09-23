@@ -40,9 +40,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsistentCodeRequest.cs" />
+    <Compile Include="ConsistentCodeResponse.cs" />
     <Compile Include="GameState.cs" />
-    <Compile Include="CodeGuess.cs" />
     <Compile Include="GuessOutcome.cs" />
+    <Compile Include="GuessOutcomeRequest.cs" />
+    <Compile Include="GuessOutcomeResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
