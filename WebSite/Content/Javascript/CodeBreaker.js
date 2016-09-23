@@ -209,19 +209,19 @@ function getConsistentCodesDoneCallback(data, textStatus, jqXHR) {
 
     var cheatCell = document.getElementById("cheatCell");
 
-    //var innerhtml = "<div><label class='consistentCodes'>Codes consistent with outcomes to date.</label></div>";
+    var innerhtml = "<div><label class='consistentCodes'>Codes consistent with outcomes to date.</label></div>";
     //innerhtml += "<div><svg width='100%' height='100%' viewBox='0 0 200 200'>";
 
     //var innerhtml = "<div class='scrollable'><svg width='100%' height='100%' viewBox='0 0 100 100' class='scrollable'>";
-    var innerhtml = "<div class='scrollable'>";
+    innerhtml += "<div class='scrollable'>";
 
     for (i = 0; i < data.ConsistentCodes.length; ++i) {
-        innerhtml += "<div><svg y='" + (i * 12) + "' height='10'>";
+        innerhtml += "<svg y='" + (i * 22) + "' height='20'>";
         var guess = data.ConsistentCodes[i];
         for (j = 0; j < guess.length; ++j) {
-            innerhtml += "<circle cx='" + (4 + 10 * j) + "' cy='5' fill='" + colorMap[guess[j]] + "' r='4' />";
+            innerhtml += "<circle cx='" + (8 + 16 * j) + "' cy='10' fill='" + colorMap[guess[j]] + "' r='6' />";
         }
-        innerhtml += "</svg></div>"
+        innerhtml += "</svg>"
     }
     //innerhtml += "</svg></div>";
     innerhtml += "</div>";
