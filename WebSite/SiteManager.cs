@@ -75,6 +75,15 @@ namespace WebSite
                 }
             );
 
+            configuration.Routes.MapHttpRoute(
+                "CodeBreakerBestGuess",
+                "CodeBreaker/BestGuess",
+                new Dictionary<string, object>
+                {
+                    {SiteManager.ControllerHintKey, SiteManager.codebreakerBestGuessControllerHint}
+                }
+            );
+
             configuration.Services.Replace(typeof(IHttpControllerSelector), new HintDrivenControllerSelector(configuration));
             server = new HttpSelfHostServer(configuration);
             server.OpenAsync().Wait();
@@ -88,6 +97,7 @@ namespace WebSite
         public const string cssControllerHint = "cssController";
         public const string codebreakerGuessControllerHint = "codebreakerGuessController";
         public const string codebreakerConsistentCodeControllerHint = "codebreakerConsistentCodeController";
+        public const string codebreakerBestGuessControllerHint = "codebreakerBestGuessController";
         public const string homeControllerHint = "homeController";
     }
 }

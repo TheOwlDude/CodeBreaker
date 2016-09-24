@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\CodeBreakerControllers\BestGuessController.cs" />
     <Compile Include="Controllers\CodeBreakerControllers\ConsistentCodeController.cs" />
     <Compile Include="Controllers\CodeBreakerControllers\GuessController.cs" />
     <Compile Include="Controllers\ContentControllerBase.cs" />
@@ -102,6 +103,9 @@
     <Content Include="Content\Javascript\jquery-3.1.0.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Content\Images\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

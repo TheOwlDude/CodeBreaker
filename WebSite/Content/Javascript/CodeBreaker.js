@@ -4,12 +4,15 @@ var colorCount = 8;
 var code;
 var guessOutcomes;
 var selectedCodeIndex = 0;
+var gameWon = false;
 
 function click() {
 	alert("Click");
 }
 
 function keydown(e) {
+
+    if (gameWon) return;
     var selectedGuessIndex = guessOutcomes.length - 1;
     var arrowKey = true;
     switch(e.keyCode) {
@@ -68,6 +71,7 @@ function GetIntValueOfInputWithinBounds(lowerBound, upperBound, defaultValue, el
 
 
 function newGame() {
+    gameWon = false;
     codeLength = GetIntValueOfInputWithinBounds(2, 8, 4, "tbCodeLength");
     colorCount = GetIntValueOfInputWithinBounds(2, 8, 6, "tbColorCount");
 
@@ -110,9 +114,14 @@ function addOutcome(result) {
     var guessWithoutOutcome = guessOutcomes[guessOutcomes.length - 1];
     guessWithoutOutcome.Outcome = { BlackCount: result.BlackCount, WhiteCount: result.WhiteCount };
 
-    var nextGuess = createNewGuess();
-    guessOutcomes[guessOutcomes.length] = { Guess: nextGuess };
-    selectedCodeIndex = 0;
+    if (result.BlackCount != codeLength) {
+        var nextGuess = createNewGuess();
+        guessOutcomes[guessOutcomes.length] = { Guess: nextGuess };
+        selectedCodeIndex = 0;
+    }
+    else {
+        gameWon = true;
+    }
 
     renderGame();
 }
@@ -161,7 +170,7 @@ function renderGame() {
             }
         }
 
-		if (i == guessOutcomes.length - 1) {
+		if (i == guessOutcomes.length - 1 && !gameWon) {
 			innerhtml += "<rect id x='" + (1 + 6 * selectedCodeIndex) + "' y='2' width='6' height='6' fill='white' fill-opacity='0.05' stroke='black' />";
 		}        
 		innerhtml += "</svg>";		
@@ -203,13 +212,13 @@ function getConsistentCodes() {
 function getConsistentCodesDoneCallback(data, textStatus, jqXHR) {
 
     if (textStatus != "success") {
-        alert("Guess done callback received non success status code " + textStatus);
+        alert("Consistent code done callback received non success status code " + textStatus);
         return;
     }
 
     var cheatCell = document.getElementById("cheatCell");
 
-    var innerhtml = "<div><label class='consistentCodes'>Codes consistent with outcomes to date.</label></div>";
+    var innerhtml = "<div><label class='consistentCodes'>" + data.ConsistentCodes.length + " Consistent Codes</label></div>";
     //innerhtml += "<div><svg width='100%' height='100%' viewBox='0 0 200 200'>";
 
     //var innerhtml = "<div class='scrollable'><svg width='100%' height='100%' viewBox='0 0 100 100' class='scrollable'>";
@@ -224,6 +233,64 @@ function getConsistentCodesDoneCallback(data, textStatus, jqXHR) {
         innerhtml += "</svg>"
     }
     //innerhtml += "</svg></div>";
+    innerhtml += "</div>";
+
+    cheatCell.innerHTML = innerhtml;
+}
+
+
+
+
+function getBestGuess() {
+
+    var outcomes = [];
+    for (i = 0; i < guessOutcomes.length; ++i) {
+        if (typeof guessOutcomes[i].Outcome === "undefined") break;
+
+        outcomes[i] = { Guess: guessOutcomes[i].Guess, BlackCount: guessOutcomes[i].Outcome.BlackCount, WhiteCount: guessOutcomes[i].Outcome.WhiteCount }
+    }
+
+
+    var bestGuessRequest =
+    {
+        CodeLength: codeLength,
+        ColorCount: colorCount,
+        GameInfo: outcomes
+    }
+
+    var stringifiedJson = JSON.stringify(bestGuessRequest);
+
+    $.ajax(
+        {
+            method: "Post",
+            url: "../CodeBreaker/BestGuess",
+            contentType: "application/json",
+            data: stringifiedJson,
+        }
+    ).done(getBestGuessDoneCallback)
+}
+
+
+function getBestGuessDoneCallback(data, textStatus, jqXHR) {
+
+    if (textStatus != "success") {
+        alert("Best guess done callback received non success status code " + textStatus);
+        return;
+    }
+
+    var cheatCell = document.getElementById("cheatCell");
+
+    var innerhtml = "<div><label class='consistentCodes'>Best Guesses</label></div>";
+
+    innerhtml += "<div>";
+    for (i = 0; i < data.BestGuesses.length; ++i) {
+        innerhtml += "<div><svg y='" + (i * 22) + "' height='20'>";
+        var guess = data.BestGuesses[i].Guess;
+        for (j = 0; j < guess.length; ++j) {
+            innerhtml += "<circle cx='" + (8 + 16 * j) + "' cy='10' fill='" + colorMap[guess[j]] + "' r='6' />";
+        }
+        innerhtml += "</svg><label>" + data.BestGuesses[i].ExpectedPossibilities + "</label></div>"
+    }
     innerhtml += "</div>";
 
     cheatCell.innerHTML = innerhtml;
