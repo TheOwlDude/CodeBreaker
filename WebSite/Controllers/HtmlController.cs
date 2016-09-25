@@ -12,7 +12,7 @@ using System.Web.Http;
 
 namespace WebSite.Controllers
 {
-    public class HtmlController : ContentControllerBase
+    public class HtmlController : TextContentControllerBase
     {
         public override string ContentFolder
         {

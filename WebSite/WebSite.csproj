@@ -64,11 +64,12 @@
     <Compile Include="Controllers\CodeBreakerControllers\BestGuessController.cs" />
     <Compile Include="Controllers\CodeBreakerControllers\ConsistentCodeController.cs" />
     <Compile Include="Controllers\CodeBreakerControllers\GuessController.cs" />
-    <Compile Include="Controllers\ContentControllerBase.cs" />
+    <Compile Include="Controllers\TextContentControllerBase.cs" />
     <Compile Include="Controllers\CssController.cs" />
     <Compile Include="Controllers\HintDrivenControllerSelector.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HtmlController.cs" />
+    <Compile Include="Controllers\ImageController.cs" />
     <Compile Include="Controllers\JavascriptController.cs" />
     <Compile Include="HttpResponseMessageFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

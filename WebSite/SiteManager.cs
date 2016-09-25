@@ -49,6 +49,15 @@ namespace WebSite
             );
 
             configuration.Routes.MapHttpRoute(
+                "imageRoute",
+                "UI/Image/{file}",
+                new Dictionary<string, object>
+                {
+                    {SiteManager.ControllerHintKey, SiteManager.imageControllerHint}
+                }
+            );
+
+            configuration.Routes.MapHttpRoute(
                 "home",
                 "Home",
                 new Dictionary<string, object>
@@ -95,6 +104,7 @@ namespace WebSite
         public const string htmlControllerHint = "htmlController";
         public const string javascriptControllerHint = "javascriptController";
         public const string cssControllerHint = "cssController";
+        public const string imageControllerHint = "imageController";
         public const string codebreakerGuessControllerHint = "codebreakerGuessController";
         public const string codebreakerConsistentCodeControllerHint = "codebreakerConsistentCodeController";
         public const string codebreakerBestGuessControllerHint = "codebreakerBestGuessController";

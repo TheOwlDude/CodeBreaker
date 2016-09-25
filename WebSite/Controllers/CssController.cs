@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace WebSite.Controllers
 {
-    public class CssController : ContentControllerBase
+    public class CssController : TextContentControllerBase
     {
         public override string ContentFolder
         {

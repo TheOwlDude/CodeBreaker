@@ -12,35 +12,34 @@ using System.Web.Http;
 
 namespace WebSite.Controllers
 {
-    public abstract class ContentControllerBase : ApiController
+    public class ImageController : ApiController
     {
-        public abstract string ContentFolder { get;}
-
-        public abstract string MediaType { get; }
-
-
         [HttpGet]
         public HttpResponseMessage GetHtmlPage([FromUri] string file)
         {
-            string filePath = Path.Combine(ContentFolder, file);
+            string filePath = Path.Combine(
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                "Content",
+                "Images",
+                file
+            );
 
             if (!File.Exists(filePath))
             {
                 return new HttpResponseMessage(System.Net.HttpStatusCode.NotFound);
             }
 
-            string fileContents;
-            using(FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            byte[] fileContents;
+            using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                using(StreamReader sr = new StreamReader(fs))
-                {
-                    fileContents = sr.ReadToEnd();
-                }
+                fileContents = new byte[fs.Length];
+                fs.Read(fileContents, 0, Convert.ToInt32(fs.Length));
             }
 
             HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
-            response.Content = new StringContent(fileContents);
-            response.Content.Headers.ContentType = new MediaTypeHeaderValue(MediaType);
+            MemoryStream stream = new MemoryStream(fileContents);
+            response.Content = new StreamContent(stream, fileContents.Length);
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue("image/gif");
             response.Headers.CacheControl = new CacheControlHeaderValue
             {
                 NoStore = true,
@@ -50,5 +49,5 @@ namespace WebSite.Controllers
 
             return response;
         }
-    }            
+    }
 }

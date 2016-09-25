@@ -72,6 +72,11 @@ function GetIntValueOfInputWithinBounds(lowerBound, upperBound, defaultValue, el
 
 function newGame() {
     gameWon = false;
+    selectedCodeIndex = 0;
+
+    var cheatCell = document.getElementById("cheatCell");
+    cheatCell.innerHTML = "";
+
     codeLength = GetIntValueOfInputWithinBounds(2, 8, 4, "tbCodeLength");
     colorCount = GetIntValueOfInputWithinBounds(2, 8, 6, "tbColorCount");
 
@@ -172,10 +177,16 @@ function renderGame() {
 
 		if (i == guessOutcomes.length - 1 && !gameWon) {
 			innerhtml += "<rect id x='" + (1 + 6 * selectedCodeIndex) + "' y='2' width='6' height='6' fill='white' fill-opacity='0.05' stroke='black' />";
-		}        
+		}
 		innerhtml += "</svg>";		
 	}
-	svg.innerHTML = innerhtml;	      
+	svg.innerHTML = innerhtml;
+
+	if (gameWon) {
+	    var cheatCell = document.getElementById("cheatCell");
+	    cheatCell.innerHTML += "<img src='Image/fireworks2.gif' />";
+	}
+
 }
 
 
