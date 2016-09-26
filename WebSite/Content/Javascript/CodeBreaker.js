@@ -70,12 +70,19 @@ function GetIntValueOfInputWithinBounds(lowerBound, upperBound, defaultValue, el
 }
 
 
+function clearCheat() {
+    var consistentCodesCell = document.getElementById("divConsistentCodes");
+    consistentCodesCell.innerHTML = "";
+
+    var bestGuessCell = document.getElementById("divBestGuessCodes");
+    bestGuessCell.innerHTML = "";
+}
+
 function newGame() {
     gameWon = false;
     selectedCodeIndex = 0;
 
-    var cheatCell = document.getElementById("cheatCell");
-    cheatCell.innerHTML = "";
+    clearCheat();
 
     codeLength = GetIntValueOfInputWithinBounds(2, 8, 4, "tbCodeLength");
     colorCount = GetIntValueOfInputWithinBounds(2, 8, 6, "tbColorCount");
@@ -91,6 +98,9 @@ function newGame() {
 }
 
 function guess() {
+
+    clearCheat();
+
     var guess =
     {
         CodeLength: codeLength,
@@ -108,16 +118,15 @@ function guess() {
             data: stringifiedJson,
         }
     ).done(guessDoneCallback)
-
-    var cheatCell = document.getElementById("cheatCell");
-    cheatCell.innerHTML = "";
-
 }
 
 function addOutcome(result) {
     
     var guessWithoutOutcome = guessOutcomes[guessOutcomes.length - 1];
     guessWithoutOutcome.Outcome = { BlackCount: result.BlackCount, WhiteCount: result.WhiteCount };
+
+    bestGuessToggled();
+    consistentCodesToggled();
 
     if (result.BlackCount != codeLength) {
         var nextGuess = createNewGuess();
@@ -186,7 +195,29 @@ function renderGame() {
 	    var cheatCell = document.getElementById("cheatCell");
 	    cheatCell.innerHTML += "<img src='Image/fireworks2.gif' />";
 	}
+}
 
+
+function consistentCodesToggled() {
+    var cbConsistentCodes = document.getElementById("cbConsistentCodes");
+    if (cbConsistentCodes.checked) {
+        getConsistentCodes();
+    }
+    else {
+        var divConsistentCodes = document.getElementById("divConsistentCodes");
+        divConsistentCodes.innerHTML = "";
+    }
+}
+
+function bestGuessToggled() {
+    var cbBestGuess = document.getElementById("cbBestGuess");
+    if (cbBestGuess.checked) {
+        getBestGuess();
+    }
+    else {
+        var divBestGuess = document.getElementById("divBestGuessCodes");
+        divBestGuess.innerHTML = "";
+    }
 }
 
 
@@ -227,13 +258,8 @@ function getConsistentCodesDoneCallback(data, textStatus, jqXHR) {
         return;
     }
 
-    var cheatCell = document.getElementById("cheatCell");
-
-    var innerhtml = "<div><label class='consistentCodes'>" + data.ConsistentCodes.length + " Consistent Codes</label></div>";
-    //innerhtml += "<div><svg width='100%' height='100%' viewBox='0 0 200 200'>";
-
-    //var innerhtml = "<div class='scrollable'><svg width='100%' height='100%' viewBox='0 0 100 100' class='scrollable'>";
-    innerhtml += "<div class='scrollable'>";
+    var divConsistentCodes = document.getElementById("divConsistentCodes");    
+    var innerhtml = "<div><label>Total Consistent Codes: " + data.ConsistentCodes.length + "</label></div>";
 
     for (i = 0; i < data.ConsistentCodes.length; ++i) {
         innerhtml += "<svg y='" + (i * 22) + "' height='20'>";
@@ -243,10 +269,8 @@ function getConsistentCodesDoneCallback(data, textStatus, jqXHR) {
         }
         innerhtml += "</svg>"
     }
-    //innerhtml += "</svg></div>";
-    innerhtml += "</div>";
 
-    cheatCell.innerHTML = innerhtml;
+    divConsistentCodes.innerHTML = innerhtml;
 }
 
 
@@ -289,11 +313,9 @@ function getBestGuessDoneCallback(data, textStatus, jqXHR) {
         return;
     }
 
-    var cheatCell = document.getElementById("cheatCell");
+    var divBestGuessCodes = document.getElementById("divBestGuessCodes");
 
-    var innerhtml = "<div><label class='consistentCodes'>Best Guesses</label></div>";
-
-    innerhtml += "<div>";
+    var innerhtml = "";
     for (i = 0; i < data.BestGuesses.length; ++i) {
         innerhtml += "<div><svg y='" + (i * 22) + "' height='20'>";
         var guess = data.BestGuesses[i].Guess;
@@ -302,7 +324,6 @@ function getBestGuessDoneCallback(data, textStatus, jqXHR) {
         }
         innerhtml += "</svg><label>" + data.BestGuesses[i].ExpectedPossibilities + "</label></div>"
     }
-    innerhtml += "</div>";
 
-    cheatCell.innerHTML = innerhtml;
+    divBestGuessCodes.innerHTML = innerhtml;
 }

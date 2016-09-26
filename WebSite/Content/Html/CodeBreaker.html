@@ -15,7 +15,7 @@
   <a href="../Home">TheOwlDude Home</a>  
     <table class="OneKHigh">
         <tr>
-            <td class="top_aligned" width="20%">
+            <td class="top_aligned" width="10%">
                 <div>
                     <div><label>Code Length (2 - 8)</label></div>
                     <div><input id="tbCodeLength" type="text" width="200" value="4" /></div>
@@ -27,12 +27,19 @@
                     <div><button id="btnBestGuess" onclick="getBestGuess();">Best Guesses</button></div>
                 </div>
             </td>
-            <td class="top_aligned" width="40%">
+            <td class="top_aligned" width="30%">
                 <div class="scrollable">
-                    <svg id="svg" width="100%" height="100%" viewBox="0 0 100 100" class="scrollable"></svg>
+                    <svg id="svg" width="100%" height="100%" viewBox="0 0 100 100"></svg>
                 </div>
             </td>
-            <td id="cheatCell" width="40%" class="top_aligned"></td>
+            <td id="consistentCodesCell" width="30%" class="top_aligned">
+                <div><input type="checkbox" id="cbConsistentCodes" onchange="consistentCodesToggled();"><label>Consistent Codes</label></div>
+                <div id="divConsistentCodes"></div>
+            </td>
+            <td id="bestGuessCell" width="30%" class="top_aligned">
+                <div><input type="checkbox" id="cbBestGuess" onchange="bestGuessToggled();"><label>Best Guess</label></div>
+                <div id="divBestGuessCodes"></div>
+            </td>
         </tr>
     </table>
 </body>

@@ -72,10 +72,9 @@ let incrementOutcomeInMap (codeLength : int) (map : Map<Outcome,int>) (outcome :
 
 //Creates a weighted map of possible outcomes for a new guess based on the historical GuessOutcomes to date. It does this by calculating for each code consistent with the set of GuessOutcomes to date
 //the outcome for the new guess.
-let getOutcomeCountMapForGuess (codeLength : int) (colorCount : int) (outcomesToDate : GuessOutcome list) (nextGuess : int list) =
-  let possibleCodes = codesConsistentWithOutcomes codeLength colorCount outcomesToDate in
-     let possibleOutcomes = List.map (calculateGuessResult nextGuess) possibleCodes in
-       List.fold (incrementOutcomeInMap codeLength) Map.empty possibleOutcomes
+let getOutcomeCountMapForGuess (codeLength : int) (colorCount : int) (consistentCodes : (int list) list) (outcomesToDate : GuessOutcome list) (nextGuess : int list) =
+   let possibleOutcomes = List.map (calculateGuessResult nextGuess) consistentCodes in
+      List.fold (incrementOutcomeInMap codeLength) Map.empty possibleOutcomes
       
 
 let AccumulateMapWeight (codeLength : int) (weightToDate : int) (outcome : Outcome) (currentOutcomeWeight : int) = weightToDate + if outcome.blackCount = codeLength then 1 else currentOutcomeWeight
@@ -88,9 +87,9 @@ let GetWeightedCodeLength (weightToDate : int) (outcome : Outcome) (weight : int
 
 //Calculates the expected possible codes remaining after a new guess. For each outcome in the weighted map of possible outcomes the GuessOutcome of the new guess and possible outcome is added 
 //to the game's GuessOutcome list and the list of possible codes recalculated. The average of the counts of these recalculated possible code lists weighted by the map weights is the answer.
-let calculateExpectedRemainingPossibleCodes (codeLength : int) (colorCount : int) (outcomesToDate : GuessOutcome list) (nextGuess : int list) =
-  let weightedPossibleOutcomes = getOutcomeCountMapForGuess codeLength colorCount outcomesToDate nextGuess in
-    let totalWeight = Map.fold (AccumulateMapWeight codeLength) 0 weightedPossibleOutcomes in
+let calculateExpectedRemainingPossibleCodes (codeLength : int) (colorCount : int) (consistentCodes : (int list) list) (outcomesToDate : GuessOutcome list) (nextGuess : int list) =
+    let weightedPossibleOutcomes = getOutcomeCountMapForGuess codeLength colorCount consistentCodes outcomesToDate nextGuess in
+      let totalWeight = Map.fold (AccumulateMapWeight codeLength) 0 weightedPossibleOutcomes in
         let weightedSum = Map.fold GetWeightedCodeLength 0 weightedPossibleOutcomes in
           (nextGuess, (decimal weightedSum) / if totalWeight = 0 then (decimal 1) else (decimal totalWeight))
 
@@ -101,7 +100,9 @@ let selectValueFromTuple codeValueTuple =
 
 let getGuessesSortedByQuality (codeLength : int) (colorCount : int) (outcomesToDate : GuessOutcome list) =
   let allGuesses = generateCodes codeLength colorCount in
-    List.sortBy selectValueFromTuple (List.map (calculateExpectedRemainingPossibleCodes codeLength colorCount outcomesToDate) allGuesses)
+    let consistentCodes = codesConsistentWithOutcomes codeLength colorCount outcomesToDate in
+      let possibleCodes = codesConsistentWithOutcomes codeLength colorCount outcomesToDate in
+        List.sortBy selectValueFromTuple (List.map (calculateExpectedRemainingPossibleCodes codeLength colorCount consistentCodes outcomesToDate) allGuesses)
     
 
     

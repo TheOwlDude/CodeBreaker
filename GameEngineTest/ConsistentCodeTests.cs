@@ -43,7 +43,8 @@ namespace GameEngineTest
             Assert.AreEqual(1, state.Guesses[0].result.whiteCount);
 
             List<int> nextGuess = new List<int> { 2, 2, 1 };
-            FSharpMap<Game.Engine.Outcome,int> map = Game.Engine.getOutcomeCountMapForGuess(3, 3, SeqModule.ToList(state.Guesses), SeqModule.ToList(nextGuess));
+            FSharpList<FSharpList<int>> possibleCodes = Game.Engine.codesConsistentWithOutcomes(state.CodeLength, state.ColorCount, SeqModule.ToList(state.Guesses));
+            FSharpMap<Game.Engine.Outcome,int> map = Game.Engine.getOutcomeCountMapForGuess(3, 3, possibleCodes, SeqModule.ToList(state.Guesses), SeqModule.ToList(nextGuess));
             foreach(KeyValuePair<Game.Engine.Outcome,int> kvp in map)
             {
                 Console.WriteLine("[blacks = {0} whites = {1}] X {2}", kvp.Key.blackCount, kvp.Key.whiteCount, kvp.Value);
@@ -61,16 +62,16 @@ namespace GameEngineTest
             GameState state = new GameState(3, 3, new int[] {1,2,1});
             state.Guess(new int[] {0,1,2});
 
-            FSharpList<FSharpList<int>>  possibleCodes = Game.Engine.codesConsistentWithOutcomes(3, 3, SeqModule.ToList(state.Guesses));
-            foreach(FSharpList<int> possibleCode in possibleCodes) Console.WriteLine(possibleCode);
+            FSharpList<FSharpList<int>>  consistentCodes = Game.Engine.codesConsistentWithOutcomes(3, 3, SeqModule.ToList(state.Guesses));
+            foreach(FSharpList<int> possibleCode in consistentCodes) Console.WriteLine(possibleCode);
 
-            FSharpMap<Game.Engine.Outcome,int> map = Game.Engine.getOutcomeCountMapForGuess(3, 3, SeqModule.ToList(state.Guesses), SeqModule.ToList(new List<int> { 1, 2, 1 }));
+            FSharpMap<Game.Engine.Outcome, int> map = Game.Engine.getOutcomeCountMapForGuess(3, 3, consistentCodes, SeqModule.ToList(state.Guesses), SeqModule.ToList(new List<int> { 1, 2, 1 }));
             foreach(KeyValuePair<Game.Engine.Outcome,int> kvp in map)
             {
                 Console.WriteLine("({0},{1}) x {2}", kvp.Key.blackCount, kvp.Key.whiteCount, kvp.Value);
             }
 
-            decimal ans = Game.Engine.calculateExpectedRemainingPossibleCodes(3, 3, SeqModule.ToList(state.Guesses), SeqModule.ToList(new List<int> { 1, 2, 1 })).Item2;
+            decimal ans = Game.Engine.calculateExpectedRemainingPossibleCodes(3, 3, consistentCodes, SeqModule.ToList(state.Guesses), SeqModule.ToList(new List<int> { 1, 2, 1 })).Item2;
             Console.WriteLine("Answer = {0}", ans);
         }
 
@@ -150,16 +151,16 @@ namespace GameEngineTest
             GameState state = new GameState(codeLength, colorCount, code);
             foreach(int[] guess in guesses) state.Guess(guess);
 
-            FSharpList<FSharpList<int>> possibleCodes = Game.Engine.codesConsistentWithOutcomes(codeLength, colorCount, SeqModule.ToList(state.Guesses));
-            foreach (FSharpList<int> possibleCode in possibleCodes) Console.WriteLine(ConvertFSharpListToString<int>(possibleCode));
+            FSharpList<FSharpList<int>> consistentCodes = Game.Engine.codesConsistentWithOutcomes(codeLength, colorCount, SeqModule.ToList(state.Guesses));
+            foreach (FSharpList<int> possibleCode in consistentCodes) Console.WriteLine(ConvertFSharpListToString<int>(possibleCode));
 
-            FSharpMap<Game.Engine.Outcome, int> map = Game.Engine.getOutcomeCountMapForGuess(codeLength, colorCount, SeqModule.ToList(state.Guesses), SeqModule.ToList(nextGuess));
+            FSharpMap<Game.Engine.Outcome, int> map = Game.Engine.getOutcomeCountMapForGuess(codeLength, colorCount, consistentCodes, SeqModule.ToList(state.Guesses), SeqModule.ToList(nextGuess));
             foreach (KeyValuePair<Game.Engine.Outcome, int> kvp in map)
             {
                 Console.WriteLine("({0},{1}) x {2}", kvp.Key.blackCount, kvp.Key.whiteCount, kvp.Value);
             }
 
-            decimal ans = Game.Engine.calculateExpectedRemainingPossibleCodes(codeLength, colorCount, SeqModule.ToList(state.Guesses), SeqModule.ToList(nextGuess)).Item2;
+            decimal ans = Game.Engine.calculateExpectedRemainingPossibleCodes(codeLength, colorCount, consistentCodes, SeqModule.ToList(state.Guesses), SeqModule.ToList(nextGuess)).Item2;
             Console.WriteLine("Answer = {0}", ans);
         }
 
@@ -201,7 +202,7 @@ namespace GameEngineTest
         }
 
         [Test]
-        [Ignore("Long running")]
+        //[Explicit("Long running")]
         public void Play4x6x25()
         {
             AutoPlayMultiple(4, 6, 5);
@@ -235,6 +236,15 @@ namespace GameEngineTest
                 outcome = state.Guess(guess);
             }
             return state.Guesses.Count;
+        }
+
+
+
+        [Test]
+        public void EverythingCodeIsConsistentWithNoInfo()
+        {
+            FSharpList<FSharpList<int>> consistentCodes = Game.Engine.codesConsistentWithOutcomes(4, 6, SeqModule.ToList(new List<Game.Engine.GuessOutcome>()));
+            Assert.AreEqual(1296, consistentCodes.Count());
         }
 
     }

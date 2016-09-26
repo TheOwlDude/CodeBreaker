@@ -12,6 +12,9 @@ namespace CodeBreakerIntegrationLib
         int codeLength;
         int colorCount;
 
+        public int CodeLength { get { return codeLength; } }
+        public int ColorCount { get { return colorCount; } }
+
         int[] code;
 
         List<Game.Engine.GuessOutcome> guesses = new List<Game.Engine.GuessOutcome>();
