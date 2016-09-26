@@ -36,7 +36,7 @@ namespace WebSite.Controllers.CodeBreakerControllers
 
             BestGuessResponse bestGuessResponse = new BestGuessResponse
             {
-                BestGuesses = bestGuesses.Take(100).Select(
+                BestGuesses = bestGuesses.Select(
                     bg => new ExpectedPossibilitiesForGuess   
                     {
                         Guess = bg.Item1.ToArray(),

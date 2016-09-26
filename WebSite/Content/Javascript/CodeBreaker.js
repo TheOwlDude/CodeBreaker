@@ -125,10 +125,11 @@ function addOutcome(result) {
     var guessWithoutOutcome = guessOutcomes[guessOutcomes.length - 1];
     guessWithoutOutcome.Outcome = { BlackCount: result.BlackCount, WhiteCount: result.WhiteCount };
 
-    bestGuessToggled();
-    consistentCodesToggled();
-
     if (result.BlackCount != codeLength) {
+
+        bestGuessToggled();
+        consistentCodesToggled();
+
         var nextGuess = createNewGuess();
         guessOutcomes[guessOutcomes.length] = { Guess: nextGuess };
         selectedCodeIndex = 0;
