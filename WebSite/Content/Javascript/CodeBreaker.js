@@ -192,7 +192,9 @@ function renderGame() {
 	svg.innerHTML = innerhtml;
 
 	if (gameWon) {
-	    var cheatCell = document.getElementById("cheatCell");
+	    clearCheat();
+
+	    var cheatCell = document.getElementById("divConsistentCodes");
 	    cheatCell.innerHTML += "<img src='Image/fireworks2.gif' />";
 	}
 }
