@@ -13,31 +13,41 @@
 </head>
 <body>
   <a href="../Home">TheOwlDude Home</a>  
-    <table class="OneKHigh">
-        <tr>
-            <td class="top_aligned" width="10%">
-                <div>
-                    <div><label>Code Length (2 - 8)</label></div>
-                    <div><input id="tbCodeLength" type="text" width="200" value="4" /></div>
-                    <div><label>Color Count (2 - 8)</label></div>
-                    <div><input id="tbColorCount" type="text" width="200" value="6" /></div>
-                    <div><button id="btnNewGame" onclick="newGame();">Start New Game</button> </div>
-                    <div><button id="btnGuess" onclick="guess();">Guess</button></div>
-                </div>
-            </td>
-            <td class="top_aligned" width="30%">
-                <div class="scrollable">
-                    <svg id="svg" width="100%" height="100%" viewBox="0 0 100 100"></svg>
-                </div>
-            </td>
-            <td id="consistentCodesCell" width="30%" class="top_aligned">
-                <div><input type="checkbox" id="cbConsistentCodes" onchange="consistentCodesToggled();"><label>Consistent Codes</label></div>
-                <div id="divConsistentCodes"></div>
-            </td>
-            <td id="bestGuessCell" width="30%" class="top_aligned">
-                <div><input type="checkbox" id="cbBestGuess" onchange="bestGuessToggled();"><label>Best Guess</label></div>
-                <div id="divBestGuessCodes"></div>
-            </td>
-        </tr>
-    </table>
+  <p></p>
+  <div>
+Discover the secret ordered colored code by refining a series of guesses. To construct your guess use the arrow keys. The left and right keys change the selected guess element, reflected by the
+black square. Up and down keys cycle through the available colors. When ready press the button labeled 'Guess'. The closeness of your guess to the actual secret code will be indicated by small black
+and gray circles. Black circles means the guess contained a correct color in the correct place. Gray circle indicate a correct color but incorrect place. The game also has a couple of 'cheat' modes.
+Check the box labeled 'Consistent Codes' and the list of codes consistent with the game information so far will be displayed. Check the box labeled 'Best Guess' and every possible guess will be listed
+ordered by the quality of the guess, best guess on top. The guesses' quality scores will also be displayed. The score represents the expected number of consistent unguessed codes remaining after that
+guess is made. Warning: even for the relatively small game size of code length 4 color count 6, calculating best guess is expensive early in the game and there is a noticeable delay. For large games
+Best Guess can take a long time.
+  </div>  
+  <p></p>
+  <table>
+      <tr>
+          <td class="top_aligned" width="10%">
+              <div>
+                  <div><label>Code Length (2 - 8)</label></div>
+                  <div><input id="tbCodeLength" type="text" width="200" value="4" /></div>
+                  <div><label>Color Count (2 - 8)</label></div>
+                  <div><input id="tbColorCount" type="text" width="200" value="6" /></div>
+                  <div><button id="btnNewGame" onclick="newGame();">Start New Game</button> </div>
+                  <div><button id="btnGuess" onclick="guess();">Guess</button></div>
+              </div>
+          </td>
+          <td class="top_aligned" width="30%">
+              <div id="divGuesses" class="scrollable">
+              </div>
+          </td>
+          <td id="consistentCodesCell" width="30%" class="top_aligned">
+              <div><input type="checkbox" id="cbConsistentCodes" onchange="consistentCodesToggled();"><label>Consistent Codes</label></div>
+              <div id="divConsistentCodes"></div>
+          </td>
+          <td id="bestGuessCell" width="30%" class="top_aligned">
+              <div><input type="checkbox" id="cbBestGuess" onchange="bestGuessToggled();"><label>Best Guess</label></div>
+              <div id="divBestGuessCodes"></div>
+          </td>
+      </tr>
+  </table>
 </body>

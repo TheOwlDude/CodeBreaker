@@ -10,7 +10,12 @@ svg.scrollable {
     overflow: auto;
 }
 
-table.OneKHigh {
-    height: "1000px";
-    overflow: auto;
+body {
+    background-color: lightblue;
+}
+
+table {
+    margin-right: 100px;
+    margin-left: 100px;
+    background-color: white;
 }

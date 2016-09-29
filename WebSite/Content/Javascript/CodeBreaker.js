@@ -158,15 +158,15 @@ function guessDoneCallback(data, textStatus, jqXHR) {
 
 function renderGame() {
 	
-	var svg = document.getElementById("svg");
+	var svg = document.getElementById("divGuesses");
 	
 	var innerhtml = "";
 	
 	for(i = 0; i < guessOutcomes.length; ++i) {
-		innerhtml += "<svg y='" + (i * 12) + "' height='10'>";
+		innerhtml += "<div><svg y='" + (i * 24) + "' height='24'>";
 		var guess = guessOutcomes[i].Guess;
 		for(j = 0; j < guess.length; ++j) {
-			innerhtml += "<circle cx='" + (4 + 6 * j) + "' cy='5' fill='" + colorMap[guess[j]] + "' r='2' " ;
+			innerhtml += "<circle cx='" + (12 + 22 * j) + "' cy='12' fill='" + colorMap[guess[j]] + "' r='10' " ;
 			if (i == guessOutcomes.length - 1) {
 				innerhtml += "id='lastRowGuess_" + j + "'";
 			}
@@ -178,17 +178,17 @@ function renderGame() {
         }
         else {
             for (b = 0; b < guessOutcomes[i].Outcome.BlackCount; ++b) {
-                innerhtml += "<circle cx='" + (4 + 6 * guess.length + 2 * b) + "' cy='3' fill='black' r='1' />"
+                innerhtml += "<circle cx='" + (6 + (22 * guess.length) + (9 * b)) + "' cy='6' fill='black' r='4' />"
             }
             for (w = 0; w < guessOutcomes[i].Outcome.WhiteCount; ++w) {
-                innerhtml += "<circle cx='" + (4 + 6 * guess.length + 2 * w) + "' cy='6' fill='gray' r='1' />"
+                innerhtml += "<circle cx='" + (6 + (22 * guess.length) + (9 * w)) + "' cy='16' fill='gray' r='4' />"
             }
         }
 
 		if (i == guessOutcomes.length - 1 && !gameWon) {
-			innerhtml += "<rect id x='" + (1 + 6 * selectedCodeIndex) + "' y='2' width='6' height='6' fill='white' fill-opacity='0.05' stroke='black' />";
+			innerhtml += "<rect id x='" + (1 + 22 * selectedCodeIndex) + "' y='1' width='22' height='22' fill='white' fill-opacity='0.05' stroke='black' />";
 		}
-		innerhtml += "</svg>";		
+		innerhtml += "</svg></div>";		
 	}
 	svg.innerHTML = innerhtml;
 
@@ -320,12 +320,12 @@ function getBestGuessDoneCallback(data, textStatus, jqXHR) {
 
     var innerhtml = "";
     for (i = 0; i < data.BestGuesses.length; ++i) {
-        innerhtml += "<div><svg y='" + (i * 22) + "' height='20'>";
+        innerhtml += "<div><table><tr><td width='20%'><label>" + i + "</label></td><td width='40%'><svg y='" + (i * 22) + "' height='20'>";
         var guess = data.BestGuesses[i].Guess;
         for (j = 0; j < guess.length; ++j) {
-            innerhtml += "<circle cx='" + (8 + 16 * j) + "' cy='10' fill='" + colorMap[guess[j]] + "' r='6' />";
+            innerhtml += "<circle cx='" + (18 + 16 * j) + "' cy='10' fill='" + colorMap[guess[j]] + "' r='6' />";
         }
-        innerhtml += "</svg><label>" + data.BestGuesses[i].ExpectedPossibilities + "</label></div>"
+        innerhtml += "</svg></td><td><label>" + data.BestGuesses[i].ExpectedPossibilities + "</label></td></tr></table></div>"
     }
 
     divBestGuessCodes.innerHTML = innerhtml;
