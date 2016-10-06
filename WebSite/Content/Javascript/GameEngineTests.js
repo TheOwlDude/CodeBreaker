@@ -364,3 +364,23 @@ QUnit.test(
     }
 );
 
+QUnit.test(
+    "GetOutcomeCountMapForGuess_DumpResults",
+    function (assert) {
+        assert.expect(0);
+        var gameState =
+            [
+                {
+                    Guess: [0, 0, 1],
+                    Result: { BlackCount: 1, WhiteCount: 1 }
+                }
+            ];
+        var outcomeMap = GetOutcomeCountMapForGuess(3, 3, CodesConsistentWithGuessResults(3, 3, gameState), [2, 2, 1]);
+        outcomeMap.forEach(
+            function (currentValue, index, array) {
+                var guessResult = GetGuessResultFromIndex(index);
+                console.log("[blacks = " + guessResult.BlackCount + ", whites = " + guessResult.WhiteCount + "] x " + currentValue.Weight);
+            }
+        );
+    }
+);

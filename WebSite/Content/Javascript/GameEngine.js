@@ -40,7 +40,7 @@ function RemoveWhitePositions(code, guess) {
 
 function CalculateGuessResult(code, guess) {
     var sansBlacks = RemoveBlackPositions(code, guess);
-    var sansWhites = RemoveWhitePositions(code, guess);
+    var sansWhites = RemoveWhitePositions(sansBlacks.NewCode, sansBlacks.NewGuess);
     return { BlackCount: code.length - sansBlacks.NewCode.length, WhiteCount: sansBlacks.NewCode.length - sansWhites.NewCode.length };
 }
 
@@ -59,6 +59,7 @@ function AreResultsConsistentWithCode(code, guessResults) {
 }
 
 
+//Call with two empty lists and after execution the first list wll be populated with all colorCount^codeLength codes based on codeLength and colorCount
 function AddCompleteCodeToList(codeList, code, codeLength, colorCount) {
     if (code.length == codeLength) codeList.push(code);
     else {
@@ -92,3 +93,61 @@ function CodesConsistentWithGuessResults(codeLength, colorCount, guessResults) {
     );
     
 }
+
+
+function GetOutcomeCountMapForGuess(codeLength, colorCount, consistentCodes, guess) {
+    var outcomeCountMap = [];
+    consistentCodes.forEach(
+        function (currentValue, index, array) {
+            var guessResult = CalculateGuessResult(currentValue, guess);
+            var guessResultIndex = GetIndexForGuessResult(guessResult.BlackCount, guessResult.WhiteCount);
+            if (typeof outcomeCountMap[guessResultIndex] === 'undefined') {
+                outcomeCountMap[guessResultIndex] = { BlackCount: guessResult.BlackCount, Weight: 1 };
+            }
+            else {
+                outcomeCountMap[guessResultIndex].Weight++;
+            }
+        }
+    );
+    return outcomeCountMap;
+}
+
+function CalculateGuessQuality(codeLength, colorCount, consistentCodes, guess) {
+    var outcomeCountMap = GetOutcomeCountMapForGuess(codeLength, colorCount, consistentCodes, guess);
+    var quality = outcomeCountMap.reduce(
+        function (previousValue, currentValue, currentIndex, array) {
+            return previousValue + (currentValue.BlackCount == codeLength ? 0 : (currentValue.Weight * currentValue.Weight) / consistentCodes.length);
+        },
+        0
+    );
+    return { Guess: guess, Quality: quality };
+}
+
+
+function GetGuessesSortedByQuality(codeLength, colorCount, guessResults) {
+    var consistentCodes = CodesConsistentWithGuessResults(codeLength, colorCount, guessResults);
+    var allCodes = [];
+    AddCompleteCodeToList(allCodes, [], codeLength, colorCount);
+    var codesWithQuality = allCodes.map(
+        function (currentValue, index, array) {
+            return CalculateGuessQuality(codeLength, colorCount, consistentCodes, currentValue);
+        }
+    );
+    return codesWithQuality.sort(
+        function (a, b) {
+            if (a.Quality < b.Quality) return -1;
+            if (a.Quality > b.Quality) return 1;
+            return 0;
+        }
+    );
+}
+
+//Creates a unique index for a guess result. 
+function GetIndexForGuessResult(blackCount, whiteCount) {
+    return (blackCount << 5) | whiteCount;
+}
+
+function GetGuessResultFromIndex(index) {
+    return { BlackCount: index >> 5, WhiteCount: index % 16 };
+}
+
