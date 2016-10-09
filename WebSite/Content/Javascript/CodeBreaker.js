@@ -101,23 +101,8 @@ function guess() {
 
     clearCheat();
 
-    var guess =
-    {
-        CodeLength: codeLength,
-        ColocCount: colorCount,
-        Code: code,
-        Guess: guessOutcomes[guessOutcomes.length - 1].Guess
-    }
-
-    var stringifiedJson = JSON.stringify(guess);
-    $.ajax(
-        {
-            method: "Post",
-            url: "../CodeBreaker/Guess",
-            contentType: "application/json",
-            data: stringifiedJson,
-        }
-    ).done(guessDoneCallback)
+    var outcome = CalculateGuessResult(code, guessOutcomes[guessOutcomes.length - 1].Guess);
+    addOutcome(outcome);
 }
 
 function addOutcome(result) {
@@ -145,15 +130,6 @@ function createNewGuess() {
     var nextGuess = new Array(codeLength);
     for (i = 0; i < codeLength; ++i) nextGuess[i] = 0;
     return nextGuess;
-}
-
-function guessDoneCallback(data, textStatus, jqXHR) {
-    if (textStatus != "success") {
-        alert("Guess done callback received non success status code " + textStatus);
-    }
-    else {
-        addOutcome(data);
-    }
 }
 
 function renderGame() {
@@ -230,43 +206,17 @@ function getConsistentCodes() {
     for (i = 0; i < guessOutcomes.length; ++i) {
         if (typeof guessOutcomes[i].Outcome === "undefined") break;
 
-        outcomes[i] = { Guess: guessOutcomes[i].Guess, BlackCount: guessOutcomes[i].Outcome.BlackCount, WhiteCount: guessOutcomes[i].Outcome.WhiteCount }
+        outcomes[i] = { Guess: guessOutcomes[i].Guess, Result: { BlackCount: guessOutcomes[i].Outcome.BlackCount, WhiteCount: guessOutcomes[i].Outcome.WhiteCount } };
     }
 
+    var consistentCodes = CodesConsistentWithGuessResults(codeLength, colorCount, outcomes);
 
-    var consistentCodesRequest =
-    {
-        CodeLength: codeLength,
-        ColorCount: colorCount,
-        GameInfo: outcomes
-    }
+    var divConsistentCodes = document.getElementById("divConsistentCodes");
+    var innerhtml = "<div><label>Total Consistent Codes: " + consistentCodes.length + "</label></div>";
 
-    var stringifiedJson = JSON.stringify(consistentCodesRequest);
-
-    $.ajax(
-        {
-            method: "Post",
-            url: "../CodeBreaker/ConsistentCodes",
-            contentType: "application/json",
-            data: stringifiedJson,
-        }
-    ).done(getConsistentCodesDoneCallback)
-}
-
-
-function getConsistentCodesDoneCallback(data, textStatus, jqXHR) {
-
-    if (textStatus != "success") {
-        alert("Consistent code done callback received non success status code " + textStatus);
-        return;
-    }
-
-    var divConsistentCodes = document.getElementById("divConsistentCodes");    
-    var innerhtml = "<div><label>Total Consistent Codes: " + data.ConsistentCodes.length + "</label></div>";
-
-    for (i = 0; i < data.ConsistentCodes.length; ++i) {
+    for (i = 0; i < consistentCodes.length; ++i) {
         innerhtml += "<svg y='" + (i * 22) + "' height='20'>";
-        var guess = data.ConsistentCodes[i];
+        var guess = consistentCodes[i];
         for (j = 0; j < guess.length; ++j) {
             innerhtml += "<circle cx='" + (8 + 16 * j) + "' cy='10' fill='" + colorMap[guess[j]] + "' r='6' />";
         }
@@ -285,48 +235,23 @@ function getBestGuess() {
     for (i = 0; i < guessOutcomes.length; ++i) {
         if (typeof guessOutcomes[i].Outcome === "undefined") break;
 
-        outcomes[i] = { Guess: guessOutcomes[i].Guess, BlackCount: guessOutcomes[i].Outcome.BlackCount, WhiteCount: guessOutcomes[i].Outcome.WhiteCount }
+        outcomes[i] = { Guess: guessOutcomes[i].Guess, Result: { BlackCount: guessOutcomes[i].Outcome.BlackCount, WhiteCount: guessOutcomes[i].Outcome.WhiteCount } };
     }
 
-
-    var bestGuessRequest =
-    {
-        CodeLength: codeLength,
-        ColorCount: colorCount,
-        GameInfo: outcomes
-    }
-
-    var stringifiedJson = JSON.stringify(bestGuessRequest);
-
-    $.ajax(
-        {
-            method: "Post",
-            url: "../CodeBreaker/BestGuess",
-            contentType: "application/json",
-            data: stringifiedJson,
-        }
-    ).done(getBestGuessDoneCallback)
-}
-
-
-function getBestGuessDoneCallback(data, textStatus, jqXHR) {
-
-    if (textStatus != "success") {
-        alert("Best guess done callback received non success status code " + textStatus);
-        return;
-    }
+    var guessesSortedByQuality = GetGuessesSortedByQuality(codeLength, colorCount, outcomes);
 
     var divBestGuessCodes = document.getElementById("divBestGuessCodes");
 
     var innerhtml = "";
-    for (i = 0; i < data.BestGuesses.length; ++i) {
+    for (i = 0; i < guessesSortedByQuality.length; ++i) {
         innerhtml += "<div><table><tr><td width='20%'><label>" + i + "</label></td><td width='40%'><svg y='" + (i * 22) + "' height='20'>";
-        var guess = data.BestGuesses[i].Guess;
+        var guess = guessesSortedByQuality[i].Guess;
         for (j = 0; j < guess.length; ++j) {
             innerhtml += "<circle cx='" + (18 + 16 * j) + "' cy='10' fill='" + colorMap[guess[j]] + "' r='6' />";
         }
-        innerhtml += "</svg></td><td><label>" + data.BestGuesses[i].ExpectedPossibilities + "</label></td></tr></table></div>"
+        innerhtml += "</svg></td><td><label>" + guessesSortedByQuality[i].Quality + "</label></td></tr></table></div>"
     }
 
-    divBestGuessCodes.innerHTML = innerhtml;
+    divBestGuessCodes.innerHTML = innerhtml;   
 }
+

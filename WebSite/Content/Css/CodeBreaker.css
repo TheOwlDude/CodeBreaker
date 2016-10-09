@@ -14,7 +14,7 @@ body {
     background-color: lightblue;
 }
 
-table {
+table.with_margins {
     margin-right: 100px;
     margin-left: 100px;
     background-color: white;
