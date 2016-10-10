@@ -172,7 +172,7 @@ function renderGame() {
 	    clearCheat();
 
 	    var cheatCell = document.getElementById("divConsistentCodes");
-	    cheatCell.innerHTML += "<img src='Image/fireworks2.gif' />";
+	    cheatCell.innerHTML += "<img src='../Images/fireworks2.gif' />";
 	}
 }
 
