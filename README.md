@@ -3,7 +3,7 @@ Discover the secret ordered color code by refining guesses given hints.
 
 The F# game engine has been swapped out with a pure javascript implementation. Now all processing is client side.
 
-The game is available on-line to play at theowldude.net:9000/UI/CodeBreaker.html
+The game is available on-line to play at theowldude.net/CodeBreaker/CodeBreaker.html
 
 Even if you happen to be familiar with this game, there are two unusual features. 
 The game allows you to include with each guess response, the set of codes that are consistent with
