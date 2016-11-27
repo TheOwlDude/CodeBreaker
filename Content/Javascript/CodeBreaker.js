@@ -12,7 +12,12 @@ function click() {
 
 function keydown(e) {
 
-    if (gameWon) return;
+    if (gameWon) 
+	{
+		if (e.keyCode == 13) newGame();
+		return;
+	}
+	
     var selectedGuessIndex = guessOutcomes.length - 1;
     var arrowKey = true;
     switch(e.keyCode) {
@@ -39,6 +44,9 @@ function keydown(e) {
 			else {
 				guessOutcomes[selectedGuessIndex].Guess[selectedCodeIndex]--;
 			}
+			break;
+		case 13:   //enter
+		    guess();
 			break;
 		default: arrowKey = false;
     }
